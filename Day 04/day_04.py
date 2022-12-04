@@ -7,14 +7,12 @@ def section_compare(filepath, any_overlap=False):
         contain_count = 0
         if not any_overlap:
             for ea, eb in elf_sets:
-                len_a = len(ea)
-                len_b = len(eb)
-                len_c = len(ea & eb)
-                if len_c == len_a or len_c == len_b:
+                ec = ea & eb
+                if ec == ea or ec == eb:
                     contain_count += 1
         else:
             for ea, eb in elf_sets:
-                if len(ea & eb):
+                if ea & eb:
                     contain_count += 1
 
     return contain_count
