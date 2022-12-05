@@ -1,20 +1,10 @@
 def day05(filepath, cratemover9001=False):
     with open(filepath) as fin:
-        lines = fin.readlines()
+        crates, moves = fin.read().split('\n\n')
 
-    crates = []
-    moves = []
-    crate_id = ''
-
-    for line in lines:
-        if line[:4] == 'move':
-            moves.append(line[5:])
-        elif line[:6] == ' 1   2':
-            crate_id = line
-        elif line.isspace():
-            pass
-        else:
-            crates.append(line)
+    crates = crates.split('\n')
+    moves = moves.split('\n')
+    crate_id = crates.pop()
 
     crate_array = []
     for letter in crates[-1]:
@@ -28,7 +18,7 @@ def day05(filepath, cratemover9001=False):
                 crate_array[stack - 1].append(letter)
 
     for move in moves:
-        number_crates = int(move.split(' from ')[0])
+        number_crates = int(move[4:].split(' from ')[0])
         stack_from = int(move.split(' from ')[1].split(' to ')[0])
         stack_to = int(move.split(' from ')[1].split(' to ')[1])
         if not cratemover9001:
