@@ -3,8 +3,7 @@ def day06(filepath, unique_length):
         line = fin.readline()
 
     for i in range(len(line)):
-        fourset = line[i:i+unique_length]
-        if all([fourset.count(line[j]) == 1 for j in range(i, i+unique_length)]):
+        if len(set(line[i:i+unique_length])) == unique_length:
             return i + unique_length
 
 
