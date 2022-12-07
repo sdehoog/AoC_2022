@@ -2,7 +2,7 @@ def day06(filepath, unique_length):
     with open(filepath) as fin:
         line = fin.readline()
 
-    for i in range(len(line)):
+    for i in range(len(line) - unique_length):
         if len(set(line[i:i+unique_length])) == unique_length:
             return i + unique_length
 
