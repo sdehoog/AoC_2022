@@ -72,12 +72,7 @@ def day07(filepath, delete_dir=False):
         return sum([folder.get_size() for folder in filesystem.folders if folder.get_size() <= 100000])
     else:
         min_delete = filesystem.root.get_size() - 40000000
-        min_delete_actual = 7000000000000
-        for folder in filesystem.folders:
-            if folder.get_size() > min_delete:
-                if folder.get_size() < min_delete_actual:
-                    min_delete_actual = folder.get_size()
-        return min_delete_actual
+        return sorted([folder.get_size() for folder in filesystem.folders if folder.get_size() > min_delete])[0]
 
 
 def main():
