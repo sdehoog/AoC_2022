@@ -14,10 +14,7 @@ def day10(filepath, draw_screen=False):
             add_x = int(line[1])
 
     if not draw_screen:
-        strength = 0
-        for i in [20, 60, 100, 140, 180, 220]:
-            strength += i * signal[i]
-        return strength
+        return sum([i * signal[i] for i in range(20,221,40)])
     else:
         screen = ''
         for i in range(len(signal)-1):
