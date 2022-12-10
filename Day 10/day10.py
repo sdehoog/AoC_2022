@@ -25,17 +25,25 @@ def day10(filepath, draw_screen=False):
                 screen += '#'
             else:
                 screen += '.'
-        print()
+        out_string = ''
         for i in range(40,241,40):
-            print(screen[i-40:i])
+            out_string += (screen[i-40:i] + '\n')
+
+        return out_string
 
 
 def main():
     assert day10('test10') == 13140
     print(day10('input10'))
 
-    day10('test10', True)
-    day10('input10', True)
+    assert day10('test10', True) == '''##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+'''
+    print(day10('input10', True))
 
 
 if __name__ == '__main__':
