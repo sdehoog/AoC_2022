@@ -4,3 +4,5 @@ venv
 /Day 01/.idea/
 /Day 02/.idea/
 /Day 03/.idea/
+**/[Tt]est*
+**/[Ii]nput*
