@@ -27,32 +27,29 @@ def insertion_sort(A):
 
 
 def compare_packet(left: list, right: list):
-    try:
-        for i in range(len(left)):
-            left_val = left[i]
-            right_val = right[i]
-            if isinstance(left_val, int) and isinstance(right_val, int):
-                if left_val < right_val:
-                    return True
-                elif left_val > right_val:
-                    return False
-                else:
-                    continue
+    for left_val, right_val in zip(left, right):
+        if isinstance(left_val, int) and isinstance(right_val, int):
+            if left_val < right_val:
+                return True
+            elif left_val > right_val:
+                return False
             else:
-                if isinstance(left_val, int):
-                    left_val = [left_val]
-                elif isinstance(right_val, int):
-                    right_val = [right_val]
-                temp = compare_packet(left_val, right_val)
-                if temp is None:
-                    continue
-                else:
-                    return temp
-        if len(left) < len(right):
-            return True
-        return None
-    except IndexError:
+                continue
+        else:
+            if isinstance(left_val, int):
+                left_val = [left_val]
+            elif isinstance(right_val, int):
+                right_val = [right_val]
+            temp = compare_packet(left_val, right_val)
+            if temp is None:
+                continue
+            else:
+                return temp
+    if len(left) < len(right):
+        return True
+    elif len(left) > len(right):
         return False
+    return None
 
 
 @timer_func
@@ -64,9 +61,7 @@ def day13(filepath, sort=False):
         correct_packets = []
         for i, pair in enumerate(packet_pairs):
             left_p, right_p = pair.split('\n')
-            left_p = loads(left_p)
-            right_p = loads(right_p)
-            if compare_packet(left_p, right_p):
+            if compare_packet(loads(left_p), loads(right_p)):
                 correct_packets.append(i)
         return sum(correct_packets) + len(correct_packets)
 
