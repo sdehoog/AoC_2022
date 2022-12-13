@@ -49,40 +49,33 @@ def day12(filepath, if_any=False):
     with open(filepath) as fin:
         alt_map = np.genfromtxt(filepath, delimiter=1, dtype=str)
 
-    start = np.where(alt_map == 'S')
-    end = np.where(alt_map == 'E')
+    start = tuple(np.argwhere(alt_map == 'S')[0])
+    end = tuple(np.argwhere(alt_map == 'E')[0])
     alt_map[start] = 'a'
     alt_map[end] = 'z'
-    start = (start[0][0], start[1][0])
-    end = (end[0][0], end[1][0])
+
     G = nx.DiGraph()
 
     for ix, iy in np.ndindex(alt_map.shape):
         if ix > 0:
             if up_val(ix, iy, alt_map):
-                G.add_edge((ix, iy), (ix - 1, iy), weight=up_val(ix, iy, alt_map))
+                G.add_edge((ix, iy), (ix - 1, iy))
         if ix < alt_map.shape[0] - 1:
             if down_val(ix, iy, alt_map):
-                G.add_edge((ix, iy), (ix + 1, iy), weight=down_val(ix, iy, alt_map))
+                G.add_edge((ix, iy), (ix + 1, iy))
         if iy > 0:
             if left_val(ix, iy, alt_map):
-                G.add_edge((ix, iy), (ix, iy - 1), weight=left_val(ix, iy, alt_map))
+                G.add_edge((ix, iy), (ix, iy - 1))
         if iy < alt_map.shape[1] - 1:
             if right_val(ix, iy, alt_map):
-                G.add_edge((ix, iy), (ix, iy + 1), weight=right_val(ix, iy, alt_map))
+                G.add_edge((ix, iy), (ix, iy + 1))
 
     if not if_any:
         steps = nx.dijkstra_path_length(G, start, end)
     else:
-        starts = np.where(alt_map == 'a')
-        steps_list = []
-        for i in range(len(starts[0])):
-            try:
-                steps_list.append(nx.dijkstra_path_length(G, (starts[0][i], starts[1][i]), end))
-            except nx.exception.NetworkXNoPath:
-                continue
-        steps_list.sort()
-        steps = steps_list[0]
+        starts = [tuple(x) for x in np.argwhere(alt_map == 'a')]
+        results = nx.multi_source_dijkstra(G, starts, end)
+        steps = results[0]
 
     return steps
 
