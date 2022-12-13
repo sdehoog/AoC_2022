@@ -68,12 +68,10 @@ def day13(filepath, sort=False):
             right_p = loads(right_p)
             if compare_packet(left_p, right_p):
                 correct_packets.append(i)
-
         return sum(correct_packets) + len(correct_packets)
+
     else:
-        packets = [loads(packet) for pair in packet_pairs for packet in pair.split('\n')]
-        packets.append([[2]])
-        packets.append([[6]])
+        packets = [loads(packet) for pair in packet_pairs for packet in pair.split('\n')] + [[[2]], [[6]]]
         packets_sorted = insertion_sort(packets)
         return (packets_sorted.index([[2]]) + 1) * (packets_sorted.index([[6]]) + 1)
 
