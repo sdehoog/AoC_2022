@@ -38,21 +38,16 @@ def compare_packet(left: list, right: list):
                     return False
                 else:
                     continue
-            elif isinstance(left_val, list) and isinstance(right_val, int):
-                if compare_packet(left_val, [right_val]) is None:
-                    continue
-                else:
-                    return compare_packet(left_val, [right_val])
-            elif isinstance(left_val, int) and isinstance(right_val, list):
-                if compare_packet([left_val], right_val) is None:
-                    continue
-                else:
-                    return compare_packet([left_val], right_val)
             else:
-                if compare_packet(left_val, right_val) is None:
+                if isinstance(left_val, int):
+                    left_val = [left_val]
+                elif isinstance(right_val, int):
+                    right_val = [right_val]
+                temp = compare_packet(left_val, right_val)
+                if temp is None:
                     continue
                 else:
-                    return compare_packet(left_val, right_val)
+                    return temp
         if len(left) < len(right):
             return True
         return None
