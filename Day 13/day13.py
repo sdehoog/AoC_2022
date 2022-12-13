@@ -23,7 +23,6 @@ def insertion_sort(A):
             A[j] = A[j-1]
             j -= 1
             A[j] = cur
-    return A
 
 
 def compare_packet(left: list, right: list):
@@ -67,8 +66,8 @@ def day13(filepath, sort=False):
 
     else:
         packets = [loads(packet) for pair in packet_pairs for packet in pair.split('\n')] + [[[2]], [[6]]]
-        packets_sorted = insertion_sort(packets)
-        return (packets_sorted.index([[2]]) + 1) * (packets_sorted.index([[6]]) + 1)
+        insertion_sort(packets)
+        return (packets.index([[2]]) + 1) * (packets.index([[6]]) + 1)
 
 
 def main():
