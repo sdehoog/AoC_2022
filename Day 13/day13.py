@@ -73,10 +73,10 @@ def day13(filepath, sort=False):
 
 def main():
     assert day13('test13') == 13
-    print(day13('input13'))
+    print(f"Part 1: {day13('input13')}")
 
     assert day13('test13', True) == 140
-    print(day13('input13', True))
+    print(f"Part 2: {day13('input13', True)}")
 
 
 if __name__ == '__main__':
