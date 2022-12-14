@@ -25,7 +25,7 @@ class CaveObjects:
             if x in self.objects:
                 self.objects[x].add(y)
             else:
-                self.objects[x] = set([self.floor])
+                self.objects[x] = {self.floor}
                 self.objects[x].add(y)
 
     def is_in(self, coord):
