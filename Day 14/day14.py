@@ -23,10 +23,10 @@ class CaveObjects:
         x, y = coord
         if not self.is_in(coord):
             if x in self.objects:
-                self.objects[x].append(y)
+                self.objects[x].add(y)
             else:
-                self.objects[x] = [self.floor]
-                self.objects[x].append(y)
+                self.objects[x] = set([self.floor])
+                self.objects[x].add(y)
 
     def is_in(self, coord):
         x, y = coord
@@ -37,6 +37,17 @@ class CaveObjects:
                 return True
 
         return False
+
+    def fall(self, coord):
+        x, y = coord
+        if x in self.objects:
+            next_highest = self.floor
+            for val in self.objects[x]:
+                if y < val < next_highest:
+                    next_highest = val
+            return x, next_highest
+        else:
+            return x, self.floor
 
 
 def tuple_add(a, b):
@@ -102,20 +113,21 @@ def day14(filepath, part2=False):
     path = [(500, -1)]
     more_sand = True
     while more_sand:
+        cur = path[-1]
         for step in [(0, 1), (-1, 1), (1, 1)]:
-            next_loc = tuple_add(path[-1], step)
+            next_loc = tuple_add(cur, step)
             if not part2:
-                if next_loc[1] == cave_floor:
+                if next_loc[1] == max_y + 1:
                     more_sand = False
                     break
             if cave_objects.is_in(next_loc):
                 continue
-            else:
-                path.append(next_loc)
-                break
+
+            path.append(next_loc)
+            break
         else:
-            sand.append(path[-1])
-            cave_objects.add_object(path[-1])
+            sand.append(cur)
+            cave_objects.add_object(cur)
             path.pop()
         if (500, 0) in sand:
             break
