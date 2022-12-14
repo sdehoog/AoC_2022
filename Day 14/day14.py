@@ -67,17 +67,17 @@ def day14(filepath, part2=False):
     with open(filepath) as fin:
         lines = [line.strip() for line in fin.readlines()]
 
-    rocks = []
+    rocks = set()
     for line in lines:
         for a, b in zip(line.split(' -> '), line.split(' -> ')[1:]):
             a = tuple(int(x) for x in a.split(','))
             b = tuple(int(x) for x in b.split(','))
             direction = tuple_direction(a, b)
             while a != b:
-                rocks.append(a)
+                rocks.add(a)
                 a = tuple_add(a, direction)
-            rocks.append(b)
-    sand = []
+            rocks.add(b)
+    sand = set()
     start = (500, 0)
     max_y = max([x for _, x in rocks])
     cave_floor = max_y + 2
@@ -85,20 +85,25 @@ def day14(filepath, part2=False):
     for rock in rocks:
         cave_objects.add_object(rock)
 
+    # dropping from the top everytime
     # caught = True
     # while caught:
     #     falling = True
     #     cur = start
     #     while falling:
     #         step = tuple_add(cur, (0, 1))
-    #         if cave_objects.is_in(step):
+    #         if step[1] == cave_floor:
+    #             sand.add(cur)
+    #             rocks.add(cur)
+    #             break
+    #         if step in sand or step in rocks:
     #             step = tuple_add(cur, (-1, 1))
-    #             if cave_objects.is_in(step):
+    #             if step in sand or step in rocks:
     #                 step = tuple_add(cur, (1, 1))
-    #                 if cave_objects.is_in(step):
+    #                 if step in sand or step in rocks:
     #                     falling = False
-    #                     sand.append(cur)
-    #                     cave_objects.add_object(cur)
+    #                     sand.add(cur)
+    #                     rocks.add(cur)
     #                     break
     #         cur = step
     #         if not part2:
@@ -110,6 +115,7 @@ def day14(filepath, part2=False):
     #         caught = False
     #         break
 
+    #   DFS
     path = [(500, -1)]
     more_sand = True
     while more_sand:
@@ -126,7 +132,7 @@ def day14(filepath, part2=False):
             path.append(next_loc)
             break
         else:
-            sand.append(cur)
+            sand.add(cur)
             cave_objects.add_object(cur)
             path.pop()
         if (500, 0) in sand:
