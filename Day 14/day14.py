@@ -74,38 +74,58 @@ def day14(filepath, part2=False):
     for rock in rocks:
         cave_objects.add_object(rock)
 
-    caught = True
-    while caught:
-        falling = True
-        cur = start
-        while falling:
-            step = tuple_add(cur, (0, 1))
-            if cave_objects.is_in(step):
-                step = tuple_add(cur, (-1, 1))
-                if cave_objects.is_in(step):
-                    step = tuple_add(cur, (1, 1))
-                    if cave_objects.is_in(step):
-                        falling = False
-                        sand.append(cur)
-                        cave_objects.add_object(cur)
-                        break
-            cur = step
-            if not part2:
-                if cur[1] >= max_y:
-                    caught = False
-                    break
-        if (500, 0) in sand:
-            falling = False
-            caught = False
-            break
+    # caught = True
+    # while caught:
+    #     falling = True
+    #     cur = start
+    #     while falling:
+    #         step = tuple_add(cur, (0, 1))
+    #         if cave_objects.is_in(step):
+    #             step = tuple_add(cur, (-1, 1))
+    #             if cave_objects.is_in(step):
+    #                 step = tuple_add(cur, (1, 1))
+    #                 if cave_objects.is_in(step):
+    #                     falling = False
+    #                     sand.append(cur)
+    #                     cave_objects.add_object(cur)
+    #                     break
+    #         cur = step
+    #         if not part2:
+    #             if cur[1] >= max_y:
+    #                 caught = False
+    #                 break
+    #     if (500, 0) in sand:
+    #         falling = False
+    #         caught = False
+    #         break
 
+    path = [(500, -1)]
+    more_sand = True
+    while more_sand:
+        for step in [(0, 1), (-1, 1), (1, 1)]:
+            next_loc = tuple_add(path[-1], step)
+            if not part2:
+                if next_loc[1] == cave_floor:
+                    more_sand = False
+                    break
+            if cave_objects.is_in(next_loc):
+                continue
+            else:
+                path.append(next_loc)
+                break
+        else:
+            sand.append(path[-1])
+            cave_objects.add_object(path[-1])
+            path.pop()
+        if (500, 0) in sand:
+            break
 
     return len(sand)
 
 
 def main():
-    # assert day14('test14') == 24
-    # print(f"Part 1: {day14('input14')}")
+    assert day14('test14') == 24
+    print(f"Part 1: {day14('input14')}")
 
     assert day14('test14', True) == 93
     print(f"Part 2: {day14('input14', True)}")
