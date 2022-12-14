@@ -14,6 +14,31 @@ def timer_func(func):
     return wrap_func
 
 
+class CaveObjects:
+    def __init__(self, floor):
+        self.objects = {}
+        self.floor = floor
+
+    def add_object(self, coord):
+        x, y = coord
+        if not self.is_in(coord):
+            if x in self.objects:
+                self.objects[x].append(y)
+            else:
+                self.objects[x] = [self.floor]
+                self.objects[x].append(y)
+
+    def is_in(self, coord):
+        x, y = coord
+        if y == self.floor:
+            return True
+        if x in self.objects:
+            if y in self.objects[x]:
+                return True
+
+        return False
+
+
 def tuple_add(a, b):
     return tuple(c + d for c, d in zip(a, b))
 
@@ -45,14 +70,9 @@ def day14(filepath, part2=False):
     start = (500, 0)
     max_y = max([x for _, x in rocks])
     cave_floor = max_y + 2
-
-    objects = {}
-    for x, y in rocks:
-        if x in objects:
-            objects[x].append(y)
-        else:
-            objects[x] = [cave_floor]
-            objects[x].append(y)
+    cave_objects = CaveObjects(cave_floor)
+    for rock in rocks:
+        cave_objects.add_object(rock)
 
     caught = True
     while caught:
@@ -60,25 +80,32 @@ def day14(filepath, part2=False):
         cur = start
         while falling:
             step = tuple_add(cur, (0, 1))
-            if step in rocks + sand:
+            if cave_objects.is_in(step):
                 step = tuple_add(cur, (-1, 1))
-                if step in rocks + sand:
+                if cave_objects.is_in(step):
                     step = tuple_add(cur, (1, 1))
-                    if step in rocks + sand:
+                    if cave_objects.is_in(step):
                         falling = False
                         sand.append(cur)
+                        cave_objects.add_object(cur)
                         break
             cur = step
-            if cur[1] >= max_y:
-                caught = False
-                break
+            if not part2:
+                if cur[1] >= max_y:
+                    caught = False
+                    break
+        if (500, 0) in sand:
+            falling = False
+            caught = False
+            break
+
 
     return len(sand)
 
 
 def main():
-    assert day14('test14') == 24
-    print(f"Part 1: {day14('input14')}")
+    # assert day14('test14') == 24
+    # print(f"Part 1: {day14('input14')}")
 
     assert day14('test14', True) == 93
     print(f"Part 2: {day14('input14', True)}")
