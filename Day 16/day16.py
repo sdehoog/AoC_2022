@@ -89,8 +89,8 @@ def main():
     assert day16('test16') == 1651
     print(f"Part 1: {day16('input16')}")
 
-    assert day16('test16', True) == 1
-    print(f"Part 2: {day16('input16', True)}")
+    # assert day16('test16', True) == 1
+    # print(f"Part 2: {day16('input16', True)}")
 
 
 if __name__ == '__main__':
