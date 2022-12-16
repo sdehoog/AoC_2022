@@ -45,6 +45,7 @@ def cave_search(start, path, time_rem, flow, valid_paths):
             valid_paths = cave_search(cave, path + tuple([cave]), new_time_rem, new_flow, valid_paths)
     return valid_paths
 
+
 @timer_func
 def day16(filepath, part2=False):
     with open(filepath) as fin:
@@ -93,7 +94,7 @@ def day16(filepath, part2=False):
             new_valid_paths[key] = value
     flows = []
     for a, b in combinations(new_valid_paths, 2):
-        if len(set(a).intersection(b)) > 0:
+        if set(a).intersection(b):
             continue
         else:
             time_rem = 26 - start.valve_connect[a[0]]
