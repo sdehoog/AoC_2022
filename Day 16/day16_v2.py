@@ -41,8 +41,8 @@ def cave_search(start, path, time_rem, flow, valid_paths):
         else:
             new_time_rem = time_rem - start.valve_connect[cave]
             new_flow = flow + new_time_rem * cave.flow
-            valid_paths[path + tuple([cave])] = {'time': new_time_rem, 'flow': new_flow}
-            valid_paths = cave_search(cave, path + tuple([cave]), new_time_rem, new_flow, valid_paths)
+            valid_paths[frozenset(path.union(set([cave])))] = max(valid_paths.get(frozenset(path.union(set([cave]))), 0), new_flow)
+            valid_paths = cave_search(cave, path.union(set([cave])), new_time_rem, new_flow, valid_paths)
     return valid_paths
 
 
@@ -82,37 +82,14 @@ def day16(filepath, part2=False):
             if cave1 != cave:
                 cave.valve_connect[cave1] = len(nx.shortest_path(G, cave, cave1))
 
-    valid_paths = cave_search(start, (), 30, 0, {})
+    valid_paths = cave_search(start, set(), 30, 0, {})
 
-    max_flow = max([val['flow'] for val in valid_paths.values()])
+    max_flow = max([flow for flow in valid_paths.values()])
     print(f'Part 1: {max_flow}')
 
-    closed_valves_len = len(closed_valves)
-    new_valid_paths = {}
-    for key, value in valid_paths.items():
-        if value['time'] > 4:
-            new_valid_paths[key] = value
-    flows = []
-    for a, b in combinations(new_valid_paths, 2):
-        if set(a).intersection(b):
-            continue
-        else:
-            time_rem = 26 - start.valve_connect[a[0]]
-            a_flow = a[0].flow*time_rem
-            if len(a) > 1:
-                for i, entry in enumerate(a[1:]):
-                    time_rem = time_rem - a[i].valve_connect[entry]
-                    a_flow += time_rem * entry.flow
-            time_rem = 26 - start.valve_connect[b[0]]
-            b_flow = b[0].flow * time_rem
-            if len(b) > 1:
-                for i, entry in enumerate(b[1:]):
-                    time_rem = time_rem - b[i].valve_connect[entry]
-                    b_flow += time_rem * entry.flow
+    valid_paths2 = cave_search(start, set(), 26, 0, {})
 
-            flows.append(a_flow + b_flow)
-
-    max_flow = max(flows)
+    max_flow = max([f_me + f_e for path_me, f_me in valid_paths2.items() for path_e, f_e in valid_paths2.items() if not path_e.intersection(path_me)])
     print(f'Part 2: {max_flow}')
 
 
