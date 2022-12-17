@@ -41,8 +41,8 @@ def cave_search(start, path, time_rem, flow, valid_paths):
         else:
             new_time_rem = time_rem - start.valve_connect[cave]
             new_flow = flow + new_time_rem * cave.flow
-            valid_paths[frozenset(path.union(set([cave])))] = max(valid_paths.get(frozenset(path.union(set([cave]))), 0), new_flow)
-            valid_paths = cave_search(cave, path.union(set([cave])), new_time_rem, new_flow, valid_paths)
+            valid_paths[frozenset(path.union({cave}))] = max(valid_paths.get(frozenset(path.union({cave})), 0), new_flow)
+            valid_paths = cave_search(cave, path.union({cave}), new_time_rem, new_flow, valid_paths)
     return valid_paths
 
 
@@ -82,21 +82,25 @@ def day16(filepath, part2=False):
             if cave1 != cave:
                 cave.valve_connect[cave1] = len(nx.shortest_path(G, cave, cave1))
 
-    valid_paths = cave_search(start, set(), 30, 0, {})
+    if not part2:
+        valid_paths = cave_search(start, set(), 30, 0, {})
 
-    max_flow = max([flow for flow in valid_paths.values()])
-    print(f'Part 1: {max_flow}')
+        return max([flow for flow in valid_paths.values()])
+    else:
+        valid_paths2 = cave_search(start, set(), 26, 0, {})
 
-    valid_paths2 = cave_search(start, set(), 26, 0, {})
-
-    max_flow = max([f_me + f_e for path_me, f_me in valid_paths2.items() for path_e, f_e in valid_paths2.items() if not path_e.intersection(path_me)])
-    print(f'Part 2: {max_flow}')
+        return max([f_me + f_e
+                    for path_me, f_me in valid_paths2.items()
+                    for path_e, f_e in valid_paths2.items()
+                    if not path_e.intersection(path_me)])
 
 
 def main():
-    day16('test16')
+    assert day16('test16') == 1651
+    print(f"Part 1: {day16('input16')}")
 
-    day16('input16')
+    assert day16('test16', True) == 1707
+    print(f"Part 1: {day16('input16', True)}")
 
 
 if __name__ == '__main__':
