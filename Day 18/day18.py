@@ -31,29 +31,6 @@ def get_adjacent(x: tuple) -> list[tuple, ...]:
     ]
 
 
-def find_air(current_point: tuple, air_points: set, rock_points, surface_area: int, valid_range):
-    air_points.add(current_point)
-    for point in get_adjacent(current_point):
-        if ((valid_range[0][0] <= point[0] <= valid_range[0][1] and
-             valid_range[1][0] <= point[1] <= valid_range[1][1]) and
-                valid_range[2][0] <= point[2] <= valid_range[2][1]):
-            pass
-        else:
-            continue
-        if point in rock_points:
-            surface_area += 1
-        elif ((valid_range[0][0] > point[0] > valid_range[0][1] or
-              valid_range[1][0] > point[1] > valid_range[1][1]) or
-              valid_range[2][0] > point[2] > valid_range[2][1]):
-            continue
-        elif point in air_points:
-            continue
-        else:
-            air_points, surface_area = find_air(point, air_points, rock_points, surface_area, valid_range)
-
-    return air_points, surface_area
-
-
 @timer_func
 def day18(filepath, part2=False):
     with open(filepath) as fin:
@@ -70,11 +47,27 @@ def day18(filepath, part2=False):
                     surface_area -= 2
         rock_points.add(point)
     if part2:
-        valid_range = [[min(point[0] for point in rock_points) - 1, max(point[0] for point in rock_points) + 1],
-                       [min(point[1] for point in rock_points) - 1, max(point[1] for point in rock_points) + 1],
-                       [min(point[2] for point in rock_points) - 1, max(point[2] for point in rock_points) + 1]]
-        sys.setrecursionlimit(max(1000, prod(x[1] for x in valid_range)))
-        _, surface_area = find_air(tuple(x[0] for x in valid_range), set(), rock_points, 0, valid_range)
+        valid_range = [[min(point[i] for point in rock_points) - 1, max(point[i] for point in rock_points) + 1]
+                       for i in range(3)]
+        min_point = tuple([valid_range[i][0] for i in range(3)])
+        steam_points = set(min_point)
+        q = [min_point]
+        while q:
+            cur = q.pop()
+            for adj in get_adjacent(cur):
+                if all([valid_range[i][0] <= adj[i] <= valid_range[i][1]
+                        for i in range(3)]):
+                    pass
+                else:
+                    continue
+                if adj in rock_points:
+                    surface_area += 1
+                elif adj in steam_points:
+                    continue
+                else:
+                    steam_points.add(adj)
+                    q.append(adj)
+
 
     return surface_area
 
