@@ -84,6 +84,7 @@ class RockGame:
         self.rock_types = ['-', '+', 'l', '|', 's']
         self.rock_pattern_len = len(self.rock_types)
         self.tower = set()
+        self.history = {}
 
     def run(self, rock_limit):
         self.max_height = 0
@@ -91,12 +92,23 @@ class RockGame:
         self.rock_counter = 0
         self.rocks = [Rock('floor')]
         self.tower.clear()
+        self.history.clear()
         for i in range(rock_limit):
-            self.rocks.append(Rock(self.rock_types[i % self.rock_pattern_len], self.max_height + 4))
+            key = self.rock_counter, self.jet_counter
+            if key in self.history:
+                rock_num, tower_height = self.history[key]
+                repeats_to_end, remainder = divmod(rock_limit - i, i - rock_num)
+                if remainder == 0:
+                    self.max_height = self.max_height + (self.max_height - tower_height) * repeats_to_end
+                    break
+            else:
+                self.history[key] = (i, self.max_height)
+            self.rocks.append(Rock(self.rock_types[self.rock_counter], self.max_height + 4))
+            self.rock_counter = (self.rock_counter + 1) % self.rock_pattern_len
             cur_down_moves = 0
             while True:
-                jet_move = self.jet_pattern[self.jet_counter % self.jet_pattern_len]
-                self.jet_counter += 1
+                jet_move = self.jet_pattern[self.jet_counter]
+                self.jet_counter = (self.jet_counter + 1) % self.jet_pattern_len
                 if jet_move == '<':
                     if self.can_move_left(self.rocks[-1]):
                         self.rocks[-1].move_left()
@@ -149,7 +161,10 @@ def day17(filepath, part2=False):
         line = fin.read().strip()
 
     rock_game = RockGame(line)
-    rock_game.run(2022)
+    if not part2:
+        rock_game.run(2022)
+    else:
+        rock_game.run(int(1e12))
 
     return int(rock_game.max_height)
 
@@ -158,7 +173,7 @@ def main():
     assert day17('test17') == 3068
     print(f"Part 1: {day17('input17')}")
 
-    assert day17('test17', True) == 1
+    assert day17('test17', True) == 1514285714288
     print(f"Part 2: {day17('input17', True)}")
 
 
