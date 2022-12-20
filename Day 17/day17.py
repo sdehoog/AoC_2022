@@ -70,7 +70,7 @@ class Rock:
             self.points = [point + 1j for point in self.points]
 
     def top(self):
-        return max([point.real for point in self.points])
+        return int(max([point.real for point in self.points]))
 
 
 class RockGame:
@@ -166,7 +166,7 @@ def day17(filepath, part2=False):
     else:
         rock_game.run(int(1e12))
 
-    return int(rock_game.max_height)
+    return rock_game.max_height
 
 
 def main():
