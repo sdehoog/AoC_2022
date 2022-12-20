@@ -83,12 +83,14 @@ class RockGame:
         self.jet_pattern_len = len(jet_pattern)
         self.rock_types = ['-', '+', 'l', '|', 's']
         self.rock_pattern_len = len(self.rock_types)
+        self.tower = set()
 
     def run(self, rock_limit):
         self.max_height = 0
         self.jet_counter = 0
         self.rock_counter = 0
         self.rocks = [Rock('floor')]
+        self.tower.clear()
         for i in range(rock_limit):
             self.rocks.append(Rock(self.rock_types[i % self.rock_pattern_len], self.max_height + 4))
             cur_down_moves = 0
@@ -110,36 +112,34 @@ class RockGame:
                         self.rocks[-1].move_down()
                     else:
                         self.max_height = max(self.max_height, self.rocks[-1].top())
+                        for point in self.rocks[-1].points:
+                            self.tower.add(point)
                         break
 
     def can_move_right(self, rock: Rock):
         for point in rock.points:
             if point.imag == 3:
                 return False
-        for o_rock in self.rocks[-2::-1]:
-            for o_rock_point in o_rock.points:
-                for point in rock.points:
-                    if o_rock_point - point == 1j:
-                        return False
+        for point in [point + 1j for point in rock.points]:
+            if point in self.tower:
+                return False
         return True
 
     def can_move_left(self, rock: Rock):
         for point in rock.points:
             if point.imag == -3:
                 return False
-        for o_rock in self.rocks[-2::-1]:
-            for o_rock_point in o_rock.points:
-                for point in rock.points:
-                    if o_rock_point - point == -1j:
-                        return False
+        for point in [point - 1j for point in rock.points]:
+            if point in self.tower:
+                return False
         return True
 
     def can_move_down(self, rock: Rock):
-        for o_rock in self.rocks[-2::-1]:
-            for o_rock_point in o_rock.points:
-                for point in rock.points:
-                    if o_rock_point - point == -1:
-                        return False
+        for point in [point - 1 for point in rock.points]:
+            if point.real <= 0:
+                return False
+            if point in self.tower:
+                return False
         return True
 
 
