@@ -66,15 +66,16 @@ def day19(filepath, part2=False):
                 resources = resources + time_for_next_bot * bots - cost_for_next_bot
                 time_left = time_left - time_for_next_bot
                 bots = bots + next_bot
-            if time_left > 1:
+            if time_left > 0:
                 available_bots = ALL_BOTS[:((bots > 0).sum() + 1 if (bots > 0).sum() < 4 else 4)]
                 rows_to_remove = []
                 if bots[0] >= cost_matrix[0].max():
-                    available_bots = np.delete(available_bots, 0, 0)
+                    rows_to_remove.append(0)
                 if bots[1] >= cost_matrix[1, 2]:
-                    available_bots = np.delete(available_bots, 1, 0)
+                    rows_to_remove.append(1)
                 if bots[2] >= cost_matrix[2, 3]:
-                    available_bots = np.delete(available_bots, 2, 0)
+                    rows_to_remove.append(2)
+                available_bots = np.delete(available_bots, rows_to_remove, 0)
                 for bot in available_bots:
                     q.append((time_left, resources, bots, bot))
         max_geode = int(max([res[3] for _, res, _ in states] + [0]))
@@ -89,8 +90,8 @@ def main():
     assert day19('test19') == 33
     print(f"Part 1: {day19('input19')}")
 
-    # assert day19('test19', True) == 56 * 62
-    # print(f"Part 2: {day19('input19', True)}")
+    assert day19('test19', True) == 56 * 62
+    print(f"Part 2: {day19('input19', True)}")
 
 
 if __name__ == '__main__':
