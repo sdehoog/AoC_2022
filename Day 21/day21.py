@@ -51,7 +51,7 @@ def day21(filepath, part2=False):
         vals = {}
         s = Solver()
         for key in monkey_dict.keys():
-            vals[key] = Int(key)
+            vals[key] = Real(key)
         for key, val in monkey_dict.items():
             if key == 'humn':
                 # s.add(vals['humn'] < 3910938071093)
