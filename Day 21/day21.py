@@ -51,7 +51,7 @@ def day21(filepath, part2=False):
         vals = {}
         s = Solver()
         for key in monkey_dict.keys():
-            vals[key] = Real(key)
+            vals[key] = Int(key)
         for key, val in monkey_dict.items():
             if key == 'humn':
                 # s.add(vals['humn'] < 3910938071093)
@@ -71,12 +71,13 @@ def day21(filepath, part2=False):
                         s.add(vals[key] == (vals[a] * vals[b]))
                     elif m == '/':
                         s.add(vals[key] == (vals[a] / vals[b]))
+                        s.add(vals[b] != 0)
 
         s.check()
         m = s.model()
         monkey_dict['humn'] = m[vals['humn']].as_long()
         monkey_dict['root'][1] = '='
-        print(monkey_eval('root', monkey_dict))
+        # print(monkey_eval('root', monkey_dict))
         return m[vals['humn']]
 
 
@@ -86,7 +87,7 @@ def main():
 
     assert day21('test21', True) == 301
     print(f"Part 2: {day21('input21', True)}")
-    # print(f"Other test: {day21('othertest', True)}")
+    print(f"Other test: {day21('othertest', True)}")
 
 
 if __name__ == '__main__':
