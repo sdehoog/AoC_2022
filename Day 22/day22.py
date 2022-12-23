@@ -202,31 +202,54 @@ def day22(filepath, test, part2=False):
                     else:
                         # TODO fix wrapping
                         if f == 0:
-                            if 0 <= cp.imag < 100:
-                                ns = complex(50, cp.imag)
-                            elif 100 <= cp.imag < 200:
-                                ns = complex(0, cp.imag)
+                            if 0 <= cp.imag < 50:
+                                ns = complex(99, 149 - cp.imag)
+                                nf = 2
+                            elif 50 <= cp.imag < 100:
+                                ns = complex(100 + (cp.imag % 50), 49)
+                                nf = 3
+                            elif 100 <= cp.imag < 150:
+                                ns = complex(149, 49 - (cp.imag % 100))
+                                nf = 2
+                            elif 150 <= cp.imag < 200:
+                                ns = complex(50 + (cp.imag % 150), 149)
+                                nf = 3
                         elif f == 1:
                             if 0 <= cp.real < 50:
-                                ns = complex(cp.real, 100)
-                            elif 50 <= cp.real < 150:
-                                ns = complex(cp.real, 0)
+                                ns = complex(100 + cp.real, 0)
+                                nf = 1
+                            elif 50 <= cp.real < 100:
+                                ns = complex(49, 150 + (cp.real % 50))
+                                nf = 2
+                            elif 100 <= cp.real < 150:
+                                ns = complex(99, 50 + (cp.real % 100))
+                                nf = 2
                         elif f == 2:
                             if 0 <= cp.imag < 50:
-                                ns = complex(149, cp.imag)
-                            elif 50 <= cp.imag < 150:
-                                ns = complex(99, cp.imag)
+                                ns = complex(0, 149 - cp.imag)
+                                nf = 0
+                            elif 50 <= cp.imag < 100:
+                                ns = complex(cp.imag % 50, 100)
+                                nf = 1
+                            elif 100 <= cp.imag < 150:
+                                ns = complex(50, 49 - (cp.imag % 100))
+                                nf = 0
                             elif 150 <= cp.imag < 200:
-                                ns = complex(49, cp.imag)
+                                ns = complex(50 + (cp.imag % 150), 0)
+                                nf = 1
                         elif f == 3:
                             if 0 <= cp.real < 50:
-                                ns = complex(cp.real, 199)
+                                ns = complex(50, 50 + cp.real)
+                                nf = 0
                             elif 50 <= cp.real < 100:
-                                ns = complex(cp.real, 149)
+                                ns = complex(0, 150 + (cp.real % 50))
+                                nf = 0
                             elif 100 <= cp.real < 149:
-                                ns = complex(cp.real, 49)
+                                ns = complex(cp.real % 100, 199)
+                                nf = 3
                         if b_map[ns] == '.':
                             cp = ns
+                            f = nf
                         elif b_map[ns] == '#':
                             f = (f + T[turn]) % 4
                             break
@@ -237,8 +260,8 @@ def day22(filepath, test, part2=False):
 
 
 def main():
-    # assert day22('test22', test=True) == 6032
-    # print(f"Part 1: {day22('input22', test=False)}")
+    assert day22('test22', test=True) == 6032
+    print(f"Part 1: {day22('input22', test=False)}")
 
     assert day22('test22', test=True, part2=True) == 5031
     print(f"Part 2: {day22('input22', test=False, part2=True)}")
