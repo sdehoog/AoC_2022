@@ -69,13 +69,7 @@ def day25(filepath, part2=False):
     with open(filepath) as fin:
         lines = [line.strip() for line in fin.readlines()]
 
-    decs = [snafu_to_dec(x) for x in lines]
-    snafus = [dec_to_snafu(x) for x in decs]
-    for a, b, c in zip(decs, snafus, lines):
-        print(a, b, c)
-    dec_sum = sum(decs)
-    snafu_sum = dec_to_snafu(dec_sum)
-    return snafu_sum
+    return dec_to_snafu(sum(map(snafu_to_dec, lines)))
 
 
 def main():
