@@ -8,6 +8,7 @@ c_dict = {
     -2: '=',
 }
 
+
 def timer_func(func):
     # This function shows the execution time of
     # the function object passed
@@ -22,7 +23,7 @@ def timer_func(func):
 
 
 def snafu_to_dec(snafu: str) -> int:
-    if len(snafu) == 0 :
+    if len(snafu) == 0:
         return 0
     d = 0
     for i, c in enumerate(snafu[::-1]):
