@@ -41,6 +41,7 @@ def day19(filepath, part2=False):
 
     max_geodes = []
     for bp_id, cost_matrix in blueprints.items():
+        current_max = 0
         if part2 and bp_id == 4:
             break
         resources = np.array([0, 0, 0, 0], dtype=int)
@@ -48,7 +49,7 @@ def day19(filepath, part2=False):
         if not part2:
             initial_state = (24, resources, bots, None)
         else:
-            initial_state = (36, resources, bots, None)
+            initial_state = (32, resources, bots, None)
         states = set()
         q = [initial_state]
         while q:
@@ -62,11 +63,13 @@ def day19(filepath, part2=False):
                     resources = resources + bots * time_left
                     if resources[-1] > 0:
                         states.add((time_left, tuple(resources.tolist()), tuple(bots.tolist())))
+                        current_max = max(current_max, resources[-1])
                     continue
                 resources = resources + time_for_next_bot * bots - cost_for_next_bot
                 time_left = time_left - time_for_next_bot
                 bots = bots + next_bot
-            if time_left > 0:
+            if (time_left > 0 and
+               (resources[-1] + bots[-1] * time_left + (time_left - 1) * (time_left) // 2) > current_max):
                 available_bots = ALL_BOTS[:((bots > 0).sum() + 1 if (bots > 0).sum() < 4 else 4)]
                 rows_to_remove = []
                 if bots[0] >= cost_matrix[0].max():
@@ -79,7 +82,10 @@ def day19(filepath, part2=False):
                 for bot in available_bots:
                     q.append((time_left, resources, bots, bot))
         max_geode = int(max([res[3] for _, res, _ in states] + [0]))
-        max_geodes.append(bp_id * max_geode)
+        if part2:
+            max_geodes.append(max_geode)
+        else:
+            max_geodes.append(bp_id * max_geode)
     if not part2:
         return sum(max_geodes)
     else:
@@ -91,6 +97,7 @@ def main():
     print(f"Part 1: {day19('input19')}")
 
     assert day19('test19', True) == 56 * 62
+    # print(f"Part 2 test: {day19('test19', True)}")
     print(f"Part 2: {day19('input19', True)}")
 
 
