@@ -1,5 +1,5 @@
 from time import time
-from collections import deque
+from collections import deque, Counter
 
 CARD_DIR = {
     'N': -1j,
@@ -90,16 +90,11 @@ def day23(filepath, part2=False):
                                 break
                         else:
                             next_step[i] = elf + CARD_DIR[look]
-                            if duplicates.intersection({next_step[i]}):
-                                pass
-                            elif next_step[i] in next_step[:i]:
-                                duplicates.add(next_step[i])
-
                             break
                     break
-
+        counts = Counter(next_step)
         for i, elf in enumerate(next_step):
-            if not duplicates.intersection({elf}) and elf is not None:
+            if counts[elf] == 1:
                 elves[i] = elf
 
         if not part2 and rounds == 10:
