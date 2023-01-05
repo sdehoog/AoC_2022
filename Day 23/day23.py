@@ -61,11 +61,6 @@ def day23(filepath, part2=False):
     with open(filepath) as fin:
         lines = fin.readlines()
 
-    # for y, line in enumerate(lines):
-    #     for x, c in enumerate(line):
-    #         if c == '#':
-    #             complex(x, y)
-
     elves = [complex(x, y) for y, line in enumerate(lines) for x, c in enumerate(line) if c == '#']
 
     # print_scan(elves)
